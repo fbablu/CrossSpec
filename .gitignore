@@ -182,3 +182,28 @@ cython_debug/
 *.log
 *.out
 *.gz
+
+
+# --- CrossSpec-specific ignores ---
+
+# Data folders
+data/
+report/
+
+# Pretrained models and checkpoints
+*.pth
+models/**/pretrained_ckpt/*.pth
+
+# Training artifacts
+*.ckpt
+*.pt
+*.npz
+*.h5
+*.onnx
+
+# Experiment logs (e.g. TensorBoard, wandb)
+runs/
+wandb/
+
+# VSCode project settings
+.vscode/
