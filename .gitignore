@@ -207,3 +207,14 @@ wandb/
 
 # VSCode project settings
 .vscode/
+
+
+# Accessing GDC API
+manifest.txt
+gdc-client
+*.svs
+wsi_*/
+batch_*
+
+# macOS
+.DS_Store
