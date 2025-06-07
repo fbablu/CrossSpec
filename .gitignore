@@ -210,11 +210,11 @@ wandb/
 
 
 # Accessing GDC API
-manifest.txt
-gdc-client
-*.svs
-wsi_*/
-batch_*
+# manifest.txt
+# gdc-client
+# *.svs
+# wsi_*/
+# batch_*
 
 # macOS
 .DS_Store
