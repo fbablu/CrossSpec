@@ -218,7 +218,7 @@ wandb/
 .vscode/
 
 
-# Accessing GDC API
+##### Accessing GDC API ### Potentially better data from here?
 # manifest.txt
 # gdc-client
 # *.svs
@@ -227,3 +227,5 @@ wandb/
 
 # macOS
 .DS_Store
+
+/logs

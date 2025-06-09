@@ -230,8 +230,9 @@ class AnalogousPCAAnalyzer:
 
         return similarity_matrix, human_organs, mouse_organs
 
+    """
     def plot_analogous_pca(self, features, labels):
-        """Create PCA plot for ALL organs with cross-species highlighting"""
+        # Create PCA plot for ALL organs with cross-species highlighting
         # Standardize and apply PCA
         scaler = StandardScaler()
         features_scaled = scaler.fit_transform(features)
@@ -293,6 +294,122 @@ class AnalogousPCAAnalyzer:
             bbox_to_anchor=(1.05, 1),
             loc="upper left",
             ncol=2,
+        )
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        plt.show()
+
+        return features_pca, pca
+  """
+
+    def plot_analogous_pca_with_ellipses(self, features, labels):
+        """Create analogous PCA plot with similarity ellipses for top pairs"""
+        # Standardize and apply PCA
+        scaler = StandardScaler()
+        features_scaled = scaler.fit_transform(features)
+        pca = PCA(n_components=2)
+        features_pca = pca.fit_transform(features_scaled)
+
+        plt.figure(figsize=(15, 10))
+
+        # Top analogous pairs
+        top_analogous_pairs = [
+            ("Human_liver", "Mouse_kidney", 0.9413),
+            ("Human_placenta", "Mouse_kidney", 0.9267),
+            ("Human_salivory_gland", "Mouse_kidney", 0.9222),
+            ("Human_kidney", "Mouse_spleen", 0.9274),
+        ]
+
+        # Create distinct colors for each organ type
+        all_organ_types = list(self.human_organs.union(self.mouse_organs))
+        colors = plt.cm.tab20(np.linspace(0, 1, len(all_organ_types)))
+        color_map = {}
+        for i, organ in enumerate(all_organ_types):
+            color_map[organ] = colors[i]
+
+        # Plot points
+        for label in set(labels):
+            mask = np.array(labels) == label
+            species, organ = label.split("_", 1)
+            marker = "o" if species == "Human" else "^"
+            size = 80 if species == "Human" else 60
+            alpha = 0.8 if species == "Human" else 0.6
+
+            plt.scatter(
+                features_pca[mask, 0],
+                features_pca[mask, 1],
+                c=[color_map[organ]],
+                label=label.replace("_", " "),
+                alpha=alpha,
+                s=size,
+                marker=marker,
+                edgecolors="black",
+                linewidth=0.5,
+            )
+
+        # Add ellipses for top analogous pairs
+        ellipse_colors = ["red", "blue", "green", "purple", "orange"]
+
+        for i, (human_organ, mouse_organ, similarity) in enumerate(top_analogous_pairs):
+            human_mask = np.array(labels) == human_organ
+            mouse_mask = np.array(labels) == mouse_organ
+
+            if np.any(human_mask) and np.any(mouse_mask):
+                # Combine data from both organs
+                combined_data = features_pca[human_mask | mouse_mask]
+
+                if len(combined_data) > 2:  # Need at least 3 points for ellipse
+                    # Draw confidence ellipse
+                    mean = np.mean(combined_data, axis=0)
+                    cov = np.cov(combined_data.T)
+                    eigenvals, eigenvecs = np.linalg.eigh(cov)
+
+                    # Handle negative eigenvalues
+                    eigenvals = np.abs(eigenvals)
+
+                    angle = np.degrees(np.arctan2(eigenvecs[1, 0], eigenvecs[0, 0]))
+                    width, height = 2 * np.sqrt(eigenvals) * 2.0  # 2 sigma
+
+                    from matplotlib.patches import Ellipse
+
+                    ellipse = Ellipse(
+                        mean,
+                        width,
+                        height,
+                        angle=angle,
+                        fill=False,
+                        edgecolor=ellipse_colors[i % len(ellipse_colors)],
+                        linewidth=3,
+                        alpha=0.9,
+                        linestyle="--",
+                    )
+                    plt.gca().add_patch(ellipse)
+
+                    # Add similarity score annotation
+                    plt.annotate(
+                        f"Sim: {similarity:.3f}",
+                        xy=mean,
+                        xytext=(10, 10),
+                        textcoords="offset points",
+                        bbox=dict(
+                            boxstyle="round,pad=0.3",
+                            facecolor=ellipse_colors[i % len(ellipse_colors)],
+                            alpha=0.3,
+                        ),
+                        fontsize=10,
+                        fontweight="bold",
+                    )
+
+        plt.xlabel(f"PCA Component 1 ({pca.explained_variance_ratio_[0]:.3f})")
+        plt.ylabel(f"PCA Component 2 ({pca.explained_variance_ratio_[1]:.3f})")
+        plt.title(
+            "Analogous Structure Analysis with Similarity Ellipses\nDashed ellipses show top cross-organ similarities"
+        )
+
+        # Create legend
+        handles, labels_legend = plt.gca().get_legend_handles_labels()
+        plt.legend(
+            handles, labels_legend, bbox_to_anchor=(1.05, 1), loc="upper left", ncol=2
         )
         plt.grid(True, alpha=0.3)
         plt.tight_layout()
@@ -378,7 +495,7 @@ class AnalogousPCAAnalyzer:
 
         # PCA visualization
         print("\nCreating analogous structure PCA plot...")
-        features_pca, pca = self.plot_analogous_pca(features, labels)
+        features_pca, pca = self.plot_analogous_pca_with(features, labels)
 
         # Similarity analysis
         print("\nComputing cross-species similarity matrix...")

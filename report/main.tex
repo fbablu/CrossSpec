@@ -16,7 +16,7 @@
 
 \author[1]{Fardeen Bablu}
 
-\affil[1]{Department of Computer Science, Vanderbilt University, Nashville, TN, USA \\ \texttt{fardeen.bablu@vanderbilt.edu}}
+\affil[1]{Department of Computer Science, Vanderbilt University, Nashville, TN, USA \\ \texttt{fardeen.e.bablu@vanderbilt.edu}}
 
 \date{\today}
 
@@ -36,8 +36,48 @@ This report investigates the use of cross-species data integration to enhance la
 Robust segmentation of histological images is critical in kidney pathology research. Cross-species data integration through using both homologous and analogous structures offers a promising avenue to enhance segmentation models. Homologous structures are anatomical features inherited from a common ancestor. While they may serve different functions, they share underlying structural similarities. In contrast, analogous structures perform similar functions but evolved independently and do not share a common evolutionary origin. Building on prior work~\cite{zhu2025crossspeciesdataintegrationenhanced}, which focused on homologous structures, this study extends the exploration to include analogous structures as well. We hypothesize that combining both forms of biological similarity can further improve segmentation outcomes. We utilize public datasets such as NuInsSeg~\cite{Mahbod2024} to implement this approach. Our goal is to enhance model generalization and performance, particularly in settings where annotated clinical data is scarce.
 
 \section*{2. Method}
+
+\subsection*{2.1 Cross-Species Training Framework}
 \noindent
-Your method description goes here.
+We implemented a multi-modal training framework supporting four distinct approaches: \textit{separate}, \textit{homologous}, \textit{analogous}, and \textit{combined} training. Following Zhu et al.~\cite{zhu2025crossspeciesdataintegrationenhanced}, we employ hybrid loss functions combining Cross Entropy Loss (CE) and Dice Loss for independent training:
+
+\begin{equation}
+L_s = \lambda_1 \cdot CE(y, y') + \lambda_2 \cdot Dice(y, y')
+\end{equation}
+
+
+\noindent
+For cross-species joint training, we replace traditional Cross Entropy Loss with Focal Loss (FL) to address class imbalance, incorporating specific weights $w_i$ for each category:
+
+\begin{equation}
+L_t = \lambda_3 \cdot w_i \cdot FL(y, y') + \lambda_4 \cdot Dice(y, y')
+\end{equation}
+
+\subsection*{2.2 Dataset and Class Imbalance Handling}
+\noindent
+Our analysis utilized the NuInsSeg dataset~\cite{Mahbod2024}, containing histopathological images from both human and mouse organs. The dataset exhibited significant class imbalance across organ-species combinations:
+
+\begin{itemize}
+\item \textbf{Kidney}: 11 human + 40 mouse images (51 total)
+\item \textbf{Liver}: 40 human + 36 mouse images (76 total)  
+\item \textbf{Spleen}: 34 human + 7 mouse images (41 total)
+\end{itemize}
+
+To address this imbalance, we implemented weighted loss functions as described by Zhu et al.~\cite{zhu2025crossspeciesdataintegrationenhanced}, which included `a specific weight $w_i$ for each category $i$ within the Focal Loss framework', ultimately improving the model's ability to handle imbalanced data by prioritizing the `rare' categories.
+
+Our class weights were calculated based on the inverse relationship between sample counts:
+
+\begin{itemize}
+\item \textbf{Kidney}: $w_{human} = 2.5$, $w_{mouse} = 1.0$ (compensating for 3.6× mouse majority)
+\item \textbf{Liver}: $w_{human} = 1.0$, $w_{mouse} = 1.1$ (roughly balanced)
+\item \textbf{Spleen}: $w_{human} = 1.0$, $w_{mouse} = 4.8$ (compensating for 4.8× human majority)
+\end{itemize}
+
+This weighting strategy prevents model bias toward majority classes and ensures balanced learning across species, particularly critical for mouse spleen data with only 7 samples compared to 34 human spleen samples.
+
+\subsection*{2.3 Model Architecture}
+\noindent
+We evaluated three segmentation architectures: U-Net, PSPNet, and DeepLabv3+, using simplified implementations with ResNet50 backbones for feature extraction. Models were trained with 1024×1024 input resolution to preserve fine-grained structural details essential for accurate layer segmentation.
 
 \bibliographystyle{plainurl}
 \bibliography{references}

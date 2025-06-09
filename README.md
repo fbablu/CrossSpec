@@ -13,7 +13,6 @@ For the others below, the parent paper has code to setup and train them.
 - [ ] UNet/model_data/unet_resnet_voc.pth
 - [ ] UNet/model_data/unet_vgg_voc.pth
 
-
 # CrossSpec
 
 A cross-species AI tool for improved layer segmentation and tissue analysis.
@@ -22,9 +21,10 @@ A cross-species AI tool for improved layer segmentation and tissue analysis.
 
 CrossSpec implements feature analysis techniques to demonstrate the structural similarity between human and mouse tissue pathology images, supporting the use of cross-species data for enhanced model training in medical image segmentation.
 
-This project reproduces and extends the analysis from the paper *"Cross-Species Data Integration for Enhanced Layer Segmentation in Kidney Pathology"* by analyzing feature distributions across different organ types and species.
+This project reproduces and extends the analysis from the paper _"Cross-Species Data Integration for Enhanced Layer Segmentation in Kidney Pathology"_ by analyzing feature distributions across different organ types and species.
 
 ## Features
+
 - **Homologous Analysis**: Compare same organ types across species (e.g., human kidney vs mouse kidney)
 - **Analogous Analysis**: Find structural similarities between different organ types across species
 - **Automated PCA Visualization**: Generate publication-quality plots showing feature distributions
@@ -135,6 +135,7 @@ features_pca, similarity_matrix, top_pairs = ana_analyzer.run_analogous_analysis
 This project uses the [NuInsSeg dataset](https://www.kaggle.com/datasets/ipateam/nuinsseg) from Kaggle, which contains histopathological images of various organs from both human and mouse sources.
 
 ### Dataset Structure
+
 ```
 data/
 ├── human kidney/
