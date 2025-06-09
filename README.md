@@ -13,6 +13,9 @@ For the others below, the parent paper has code to setup and train them.
 - [ ] UNet/model_data/unet_resnet_voc.pth
 - [ ] UNet/model_data/unet_vgg_voc.pth
 
+
+
+===========================
 # CrossSpec
 
 A cross-species AI tool for improved layer segmentation and tissue analysis.
@@ -36,7 +39,7 @@ This project reproduces and extends the analysis from the paper _"Cross-Species 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/CrossSpec.git
+git clone https://github.com/fbablu/CrossSpec.git
 cd CrossSpec
 
 # Create virtual environment
@@ -134,19 +137,6 @@ features_pca, similarity_matrix, top_pairs = ana_analyzer.run_analogous_analysis
 
 This project uses the [NuInsSeg dataset](https://www.kaggle.com/datasets/ipateam/nuinsseg) from Kaggle, which contains histopathological images of various organs from both human and mouse sources.
 
-### Dataset Structure
-
-```
-data/
-├── human kidney/
-│   └── tissue images/
-├── mouse kidney/
-│   └── tissue images/
-├── human liver/
-│   └── tissue images/
-└── ... (other organs)
-```
-
 ## Results
 
 The analysis generates:
@@ -179,22 +169,28 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 If you use this tool in your research, please cite:
 
 ```bibtex
-@article{crossspec2024,
-  title={Cross-Species Data Integration for Enhanced Layer Segmentation in Kidney Pathology},
-  author={Zhu, Junchao and Yin, Mengmeng and Deng, Ruining and Long, Yitian and Wang, Yu and Wang, Yaohong and Zhao, Shilin and Yang, Haichun and Huo, Yuankai},
-  journal={arXiv preprint arXiv:2408.09278v2},
-  year={2024}
+@article{crossspec2025,
+  title={},
+  author={},
 }
 ```
 
-## Acknowledgments
 
-- Original paper authors for the theoretical foundation
-- NuInsSeg dataset creators for providing the multi-organ histopathological data
-- PyTorch and scikit-learn communities for excellent ML libraries
 
-## Notes
 
-- **Model Files**: The README mentions pretrained model files (.pth) that should be downloaded from the original repositories
-- **GPU Support**: CUDA acceleration is automatically used when available
-- **Memory Requirements**: Large datasets may require significant RAM for feature extraction
+
+# First training results: 
+Ok cool, I got this result :
+(venv) (base) fardeenb@Fardeen-MacBook-Pro CrossSpec % python multi_organ_train.py --training_mode homologous --organ_type kidney --model_type unet --epochs 1 --batch_size 1
+Starting homologous training for kidney
+Model: unet, Epochs: 1
+Epoch 0, Batch 0/51, Loss: 2.2484
+Epoch 0, Batch 10/51, Loss: 2.0292
+Epoch 0, Batch 20/51, Loss: 2.3345
+Epoch 0, Batch 30/51, Loss: 1.9786
+Epoch 0, Batch 40/51, Loss: 2.1243
+Epoch 0, Batch 50/51, Loss: 1.9414
+Epoch 0 - Average Training Loss: 2.1629
+Epoch 0 - Average Validation Loss: 2.0581
+Checkpoint saved: logs/homologous_kidney_unet/best_model.pth
+Checkpoint saved: logs/homologous_kidney_unet/epoch_000.pth
