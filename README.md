@@ -180,8 +180,7 @@ If you use this tool in your research, please cite:
 
 
 # First training results: 
-Ok cool, I got this result :
-(venv) (base) fardeenb@Fardeen-MacBook-Pro CrossSpec % python multi_organ_train.py --training_mode homologous --organ_type kidney --model_type unet --epochs 1 --batch_size 1
+python multi_organ_train.py --training_mode homologous --organ_type kidney --model_type unet --epochs 1 --batch_size 1
 Starting homologous training for kidney
 Model: unet, Epochs: 1
 Epoch 0, Batch 0/51, Loss: 2.2484
